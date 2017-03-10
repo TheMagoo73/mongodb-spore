@@ -1,0 +1,6 @@
+connection: mongodb://{uid}:{pwd}@{address}:{port}/{database}
+database: {database}
+collection: {collection}
+data:
+  files:
+    - ./examplefile

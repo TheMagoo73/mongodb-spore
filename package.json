@@ -1,0 +1,25 @@
+{
+  "name": "mongodb-spore",
+  "version": "1.0.0",
+  "description": "YAML/JSON based seading for MongoDB",
+  "main": "mongodb-spore.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "JSON",
+    "YAML",
+    "MongoDB",
+    "seading"
+  ],
+  "author": "John Clarke",
+  "license": "MIT",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "co": "^4.6.0",
+    "command-line-args": "^4.0.2",
+    "command-line-usage": "^4.0.0",
+    "mongodb": "^2.2.24",
+    "yamljs": "^0.2.8"
+  }
+}

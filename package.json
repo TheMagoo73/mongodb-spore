@@ -1,8 +1,12 @@
 {
   "name": "mongodb-spore",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "YAML/JSON based seading for MongoDB",
   "main": "mongodb-spore.js",
+  "repository" :
+  { "type" : "git",
+     "url" : "https://github.com/TheMagoo73/mongodb-spore.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,7 +14,7 @@
     "JSON",
     "YAML",
     "MongoDB",
-    "seading"
+    "seed"
   ],
   "author": "John Clarke",
   "license": "MIT",

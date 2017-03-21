@@ -3,13 +3,20 @@
 const commandLineArgs = require('command-line-args');
 
 const optionsDefinitions = [
-  {name: 'src', alias: 's', type: String, multiple: true},
-  {name: 'help', alias: '?', type: Boolean}
+  {name: 'src', alias: 's', type: String, multiple: true, defaultOption: true},
+  {name: 'help', alias: '?', type: Boolean},
+  {name: 'verbose', alias: 'v', type: Boolean, defaultValue: false}
 ];
 
-const options = commandLineArgs(optionsDefinitions);
+const options = commandLineArgs(optionsDefinitions, {partial: true});
 
-console.log(options);
+verboseOutput = require('./verbose-output');
+vo = new verboseOutput(options.verbose);
+
+vo.log("Command line options: " + JSON.stringify(options));
+
+if(!options.src)
+  options.help = true;
 
 if(options.help === true) {
     const commandLineUsage = require("command-line-usage");
@@ -23,8 +30,8 @@ if(options.help === true) {
         optionList: [
           {
             name: 'src',
-            typeLabel: '[underline]{file}',
-            description: 'The input configuration'
+            typeLabel: '[underline]{files}',
+            description: 'The input configuration file(s). Required'
           },
           {
             name: 'help',
@@ -40,9 +47,9 @@ if(options.help === true) {
 const YAML = require('yamljs');
 
 options.src.forEach((configFile) => {
-  console.log('Processing configuration file ' + configFile);
+  vo.log('Processing configuration file ' + configFile);
   var config = YAML.load(configFile);
-  console.log(config);
+  vo.log('Configuration: ' + config);
 
   var MongoClient = require('mongodb').MongoClient,
       co = require('co'),
@@ -54,10 +61,11 @@ options.src.forEach((configFile) => {
     config.data.files.forEach((dataFile) =>{
       var data = require(dataFile);
       collection.insertMany(data);
-      console.log(data);
+      vo.log('Completed data file ' + dataFile);
+      db.close();
     })
-    db.close();
   }).catch((err)=> {
     console.log(err.stack);
   })
+  vo.log('Completed configuration file ' + configFile);
 })

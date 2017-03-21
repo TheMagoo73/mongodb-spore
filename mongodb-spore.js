@@ -56,14 +56,17 @@ options.src.forEach((configFile) => {
       assert = require('assert');
 
   co(function*() {
+    var arrInsertMany = [];
     var db = yield MongoClient.connect(config.connection);
     var collection = db.collection(config.collection);
     config.data.files.forEach((dataFile) =>{
       var data = require(dataFile);
-      collection.insertMany(data);
-      vo.log('Completed data file ' + dataFile);
-      db.close();
+      arrInsertMany.push(collection.insertMany(data));
+      vo.log('Completed data file ' + dataFile);      
     })
+    var results = yield arrInsertMany;
+    db.close();
+    console.log(results);
   }).catch((err)=> {
     console.log(err.stack);
   })

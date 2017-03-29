@@ -45,9 +45,12 @@ if(options.help === true) {
 }
 
 const YAML = require('yamljs');
+const PATH = require('path');
 
 options.src.forEach((configFile) => {
   vo.log('Processing configuration file ' + configFile);
+  var directoryName = PATH.dirname(configFile);
+  vo.log('directoryName: ' + directoryName);
   var config = YAML.load(configFile);
   vo.log('Configuration: ' + config);
 
@@ -59,7 +62,13 @@ options.src.forEach((configFile) => {
     var arrInsertMany = [];
     var db = yield MongoClient.connect(config.connection);
     var collection = db.collection(config.collection);
-    config.data.files.forEach((dataFile) =>{
+    config.data.files.forEach((dataFile) => {
+      vo.log('dataFile: ' + dataFile);      
+      if(dataFile.startsWith('.\\'))
+      {
+          vo.log('dataFile starts with .\\: ');
+          dataFile = dataFile.replace('.\\', directoryName + '\\');
+      }
       var data = require(dataFile);
       arrInsertMany.push(collection.insertMany(data));
       vo.log('Completed data file ' + dataFile);      

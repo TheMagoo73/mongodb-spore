@@ -1,6 +1,6 @@
 {
   "name": "mongodb-spore",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "YAML/JSON based seading for MongoDB",
   "main": "mongodb-spore.js",
   "repository" :

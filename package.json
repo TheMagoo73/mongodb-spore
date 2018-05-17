@@ -3,12 +3,13 @@
   "version": "1.0.6",
   "description": "YAML/JSON based seading for MongoDB",
   "main": "mongodb-spore.js",
-  "repository" :
-  { "type" : "git",
-     "url" : "https://github.com/TheMagoo73/mongodb-spore.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheMagoo73/mongodb-spore.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "node --nolazy --inspect-brk=9229 mongodb-spore.js"
   },
   "keywords": [
     "JSON",
@@ -28,6 +29,7 @@
     "command-line-args": "^4.0.2",
     "command-line-usage": "^4.0.0",
     "mongodb": "^2.2.24",
+    "npm": "^6.0.1",
     "yamljs": "^0.2.8"
   }
 }

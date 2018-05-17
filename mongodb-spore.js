@@ -53,43 +53,43 @@ var errHandler = function(err) {
 }
 
 options.src.forEach((configFile) => {
-  vo.log('Processing configuration file ' + configFile);
   var directoryName = PATH.dirname(configFile);
-  vo.log('directoryName: ' + directoryName);
   var config = YAML.load(configFile);
-  vo.log('Configuration: ' + config);
 
-  var MongoClient = require('mongodb').MongoClient,
-      co = require('co'),
-      assert = require('assert');
+  var MongoClient = require('mongodb').MongoClient;
+  var connection = null;
 
-  co(function*() {
-    var db = yield MongoClient.connect(config.connection);
-    if(options.dropcollection)
-    {
-      yield db.dropCollection(config.collection).then(function(data) {
-        console.log(data)
-        vo.log('Dropped collection' + config.collection);    
-      }, errHandler);
+  MongoClient.connect(config.connection)
+  .then(
+    (db)=>{
+      connection = db;
+      if(options.dropcollection) return connection.dropCollection(config.collection).then(() => console.log('Dropped collection ' + config.collection));
+      return Promise.resolve()
     }
-    var collection = db.collection(config.collection);
-    config.data.files.forEach((dataFile) => {
-      vo.log('dataFile: ' + dataFile);      
+  )
+  .then(
+    () => {
+      let collection = connection.collection(config.collection)
+      let changes = [];
       if(dataFile.startsWith('.\\'))
       {
-          vo.log('dataFile starts with .\\: ');
           dataFile = dataFile.replace('.\\', directoryName + '\\');
       }
       var data = require(dataFile);
-      collection.insertMany(data).then(function(data) {
-        console.log(data)
-        vo.log('Completed data file ' + dataFile);    
-      }, errHandler);
-    })
-    db.close();
-    console.log(results);
-  }).catch((err)=> {
-    console.log(err.stack);
-  })
+      config.data.files.forEach(
+        (datafile) => {
+          changes.push(collection.insertMany(data).then(() => console.log('Completed datafile ' + datafile)))
+        }
+      )
+      return Promise.all(changes);
+    }
+  )
+  .then(
+    () => db.close()
+  )
+  .catch(
+    err => console.log(err.message)
+  )
+  
   vo.log('Completed configuration file ' + configFile);
 })
